@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Create VPC Endpoint for Systems Manager Session Manager for private EC2 instance
+
+Parameters:
+  myVPCId:
+    Type: "String"
+    Description: "VPC ID for VPC Endpoint."
+  subnetA:
+    Type: "String"
+    Description: "First Subnet for VPC Endpoint."
+  subnetB:
+    Type: "String"
+    Description: "Second Subnet for VPC Endpoint."
+  mySecurityGroup:
+    Type: "String"
+    Description: "SecurityGroup for VPC Endpoint."
+  
+
+Resources:
+  ssmInterfaceEndpoint:
+    Type: 'AWS::EC2::VPCEndpoint'
+    Properties:
+      VpcEndpointType: Interface
+      ServiceName: !Sub 'com.amazonaws.${AWS::Region}.ssm'
+      VpcId: !Ref myVPCId
+      PrivateDnsEnabled: True
+      SubnetIds: 
+        - !Ref subnetA
+        - !Ref subnetB
+      SecurityGroupIds:
+        - !Ref mySecurityGroup
+
+  ssmmessagesInterfaceEndpoint:
+    Type: 'AWS::EC2::VPCEndpoint'
+    Properties:
+      VpcEndpointType: Interface
+      ServiceName: !Sub 'com.amazonaws.${AWS::Region}.ssmmessages'
+      VpcId: !Ref myVPCId
+      PrivateDnsEnabled: True
+      SubnetIds: 
+        - !Ref subnetA
+        - !Ref subnetB
+      SecurityGroupIds:
+        - !Ref mySecurityGroup
+
+  ec2messagesInterfaceEndpoint:
+    Type: 'AWS::EC2::VPCEndpoint'
+    Properties:
+      VpcEndpointType: Interface
+      ServiceName: !Sub 'com.amazonaws.${AWS::Region}.ec2messages'
+      VpcId: !Ref myVPCId
+      PrivateDnsEnabled: True
+      SubnetIds: 
+        - !Ref subnetA
+        - !Ref subnetB
+      SecurityGroupIds:
+        - !Ref mySecurityGroup

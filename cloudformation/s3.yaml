@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: DataLake & DataMart Buckets
+
+Parameters:
+  LakeBucketName:
+    Description: Lake Backet Name.
+    Type: String
+  MartBucketName:
+    Description: Mart Backet Name.
+    Type: String
+
+Resources:
+  LakeBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Sub ${LakeBucketName}
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  MartBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Sub ${MartBucketName}
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true

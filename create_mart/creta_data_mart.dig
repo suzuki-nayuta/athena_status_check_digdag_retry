@@ -1,0 +1,30 @@
+timezone: Asia/Tokyo
+_export:
+  # 使用するPythonの指定
+  py:
+    python: /usr/bin/python3
+  # 変数設定
+  sql_file_path: sql/sample_mart.sql
+  yyyymmdd: ${moment().format("YYYYMMDD")}
+  workgroup: Athenaのワークグループ名
+  database_name: テーブル定義を作成するデータベース名
+
+  # s3://マート用バケット名/プレフィクス、のような形式を想定
+  mart_key_prefix: s3://データレイク層用のバケット名/wine_mart
+  # s3://Athena結果出力用バケット名/プレフィクス、のような形式を想定
+  athena_result_key_prefix: s3://Athena検索結果出力用のバケット名/result
+
+# 簡単のため、毎回洗い替えすることとする
++clear_partition:
+  sh>: >-
+    aws s3 rm ${mart_key_prefix}/${yyyymmdd}/ --recursive;
+
++execute_query:
+  py>: python.athena.execute_sql_file
+
++check_query_status:
+  _retry:
+    limit: 3
+    interval: 5
+    interval_type: constant
+  py>: python.athena.check_query_status
