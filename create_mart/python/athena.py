@@ -2,13 +2,14 @@ import boto3
 import digdag
 
 
-def execute_sql_file(sql_file_path):
+def execute_sql_file():
     """ 指定したパスのDMLを読み出し、Athenaで実行する。
     """
     param = digdag.env.params
     workgroup = param['workgroup']
     athena_result_key_prefix = param['athena_result_key_prefix']
     database_name = param['database_name']
+    sql_file_path = param['sql_file_path']
     athena_client = boto3.client('athena', region_name='ap-northeast-1')
     result_configuration = {"OutputLocation": athena_result_key_prefix}
     query_execution_context = {'Database': database_name}
@@ -32,7 +33,7 @@ def execute_sql_file(sql_file_path):
     digdag.env.store({"execution_id": execution_id})
 
 
-def check_query_status(execution_id):
+def check_query_status():
     """ クエリの実行が終わっているか確認する。終わっていない場合は例外を送出してdigdag側でリトライする。
     """
     param = digdag.env.params
